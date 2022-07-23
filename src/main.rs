@@ -1,6 +1,6 @@
 use std::fs;
 
-use rustychip::*;
+use rustychip::prelude::*;
 
 fn main() {
 
