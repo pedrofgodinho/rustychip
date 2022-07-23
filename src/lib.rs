@@ -124,6 +124,15 @@ impl Emulator {
         })
     }
 
+    pub fn tick_clock(&mut self) {
+        if self.delay_timer > 0 {
+            self.delay_timer -= 1;
+        }
+        if self.sound_timer > 0 {
+            self.sound_timer -= 1;
+        }
+    }
+
     pub fn step(&mut self) -> Result<bool, EmulatorError> {
         let opcode = self.fetch_opcode()?;
         self.execute_opcode(opcode)
