@@ -9,6 +9,10 @@ struct Args {
     #[clap(value_parser)]
     rom: String,
 
+    /// The delay between each emulator step in microseconds
+    #[clap(short, long, value_parser, default_value = "2500")]
+    delay: u64,
+
     /// Whether to emulate the behaviour of the original chip8 and set vx register to vy and shift it instead of shifting vy in place. Will likely break some roms
     #[clap(short, long, value_parser, default_value_t = false)]
     shift_sets_vx: bool,
@@ -33,6 +37,6 @@ fn main() {
         }
     };
     let emu = Emulator::new(&rom, args.shift_sets_vx, args.jump_with_offset_bug_emulation, args.increment_i_on_store_and_load).unwrap();
-    let interface = Interface::new(emu);
+    let interface = Interface::new(emu, args.delay);
     interface.run();
 }

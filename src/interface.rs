@@ -11,13 +11,15 @@ use crate::emulator::Emulator;
 pub struct Interface {
     running: bool,
     emulator: Arc<RwLock<Emulator>>,
+    delay: u64,
 }
 
 impl Interface {
-    pub fn new(emulator: Emulator) -> Interface {
+    pub fn new(emulator: Emulator, delay: u64) -> Interface {
         Interface {
             running: true,
             emulator: Arc::new(RwLock::new(emulator)),
+            delay,
         }
     }
 
@@ -40,7 +42,7 @@ impl Interface {
                 while let Ok((key, state)) = key_rx.try_recv() {
                     emulator.write().unwrap().keypad[key as usize] = state;
                 }
-                thread::sleep(Duration::from_millis(1));
+                thread::sleep(Duration::from_micros(self.delay));
             }
         });
 
