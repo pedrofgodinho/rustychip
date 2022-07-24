@@ -12,6 +12,14 @@ The emulator needs a ROM file to run.
 Other flags are available to emulate the behaviour of other implementations of the CHIP-8.
 Check `cargo run -- --help`
 
+The 16 buttons of the CHIP-8 are mapped in the following way:
+```
+    1 2 3 C      1 2 3 4
+    4 5 6 D  ->  q w e r
+    7 8 9 E      a s d f
+    A 0 B F      z x c v
+```
+
 ## Known Issues
 The current version seems to segfault on my linux machine, although it works fine on my windows machine. Not yet sure why.
 
