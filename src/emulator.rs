@@ -280,7 +280,7 @@ impl Emulator {
                 self.registers[instruction.x as usize] >>= 1;
             }
             0x7 => { // Subtract Vy from Vx (Vx = Vy - Vx)
-                let (result, borrow) = self.registers[instruction.x as usize].overflowing_sub(self.registers[instruction.y as usize]);
+                let (result, borrow) = self.registers[instruction.y as usize].overflowing_sub(self.registers[instruction.x as usize]);
                 self.registers[instruction.x as usize] = result;
                 self.registers[0xF] = !borrow as u8;
             }
@@ -389,7 +389,7 @@ impl Emulator {
 
     fn operation_f(&mut self, instruction: Instruction) -> Result<bool, EmulatorError> {
         match instruction.nn {
-            0x0f => { // Load Vx with delay timer value
+            0x07 => { // Load Vx with delay timer value
                 self.registers[instruction.x as usize] = self.delay_timer;
             }
             0x15 => { // Set delay timer to Vx
