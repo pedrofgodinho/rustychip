@@ -1,6 +1,6 @@
 use std::sync::{Arc, mpsc, RwLock};
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -26,10 +26,11 @@ impl Interface {
         let (display_tx, display_rx) = mpsc::channel();
         let (clock_tx, clock_rx) = mpsc::channel();
         let (key_tx, key_rx) = mpsc::channel();
+        let (run_tx, run_rx) = mpsc::channel();
 
         let emulator = self.emulator.clone();
-        thread::spawn(move || {
-            loop {
+        let handle = thread::spawn(move || {
+            while run_rx.try_recv().is_err() {
                 if emulator.write().unwrap().step().unwrap() {
                     display_tx.send(()).unwrap();
                 }
@@ -72,6 +73,8 @@ impl Interface {
             clock_tx.send(()).unwrap();
             thread::sleep(Duration::from_nanos(1_000_000_000u64 / 60));
         }
+        run_tx.send(()).unwrap();
+        handle.join().unwrap();
     }
 
     fn handle_event(&mut self, event: &Event, key_tx: &mpsc::Sender<(u8, bool)>) {
